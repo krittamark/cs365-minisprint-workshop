@@ -18,7 +18,8 @@ app.use(cors({
 
 // --- Mock Database ---
 const FAKE_DB = {
-    "admin": "Password123!"
+    "admin": "Password123!",
+    "admin1" : "Password1234",
 };
 
 // --- API Endpoint สำหรับ Login ---
