@@ -1,58 +1,38 @@
-# This is a basic workflow to help you get started with Actions
+name: CI/CD Web Login
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-    paths:
-      - "./"
   pull_request:
     branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # ขั้นตอน CI: ตรวจสอบความถูกต้องของ Syntax เบื้องต้น
       - name: Check for HTML Errors
-        run: |
-          echo "กำลังตรวจสอบไฟล์ HTML..."
-          test -f index.html || exit 1 # เช็คว่าไฟล์มีอยู่จริงไหม
-
-      - name: Run JS Logic Test
-        run: |
-          echo "กำลังตรวจสอบ Logic ใน script.js..."
-          # ในโปรเจกต์จริง มักจะใช้ Jest หรือ Mocha ในการรัน Test
-          echo "Logic Test Passed!"
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v4
+        run: test -f index.html || exit 1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./"
+          path: "." # ระบุโฟลเดอร์ที่เก็บไฟล์ HTML/CSS/JS
 
-
-      # ขั้นตอน CD: ตัวอย่างการ Deploy ไปยัง GitHub Pages (หากต้องการ)
+  deploy:
+    needs: build # ต้องรอให้ build เสร็จก่อน
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-page@v4
