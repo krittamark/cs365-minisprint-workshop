@@ -53,11 +53,13 @@ jobs:
 
       #- name: Check for HTML Errors
         #run: test -f frontend/index.html || exit 1
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "frontend" # ระบุโฟลเดอร์ที่เก็บไฟล์ HTML/CSS/JS
+          path: "./frontend" # ระบุโฟลเดอร์ที่เก็บไฟล์ HTML/CSS/JS
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
