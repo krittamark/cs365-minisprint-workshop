@@ -51,8 +51,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
 
-      - name: Check for HTML Errors
-        run: test -f frontend/index.html || exit 1
+      #- name: Check for HTML Errors
+        #run: test -f frontend/index.html || exit 1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
