@@ -1,0 +1,14 @@
+{
+  "name": "login-backend",
+  "version": "1.0.0",
+  "description": "Backend for Login with Remember Me",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}

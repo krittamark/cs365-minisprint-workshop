@@ -86,22 +86,65 @@ document.addEventListener("DOMContentLoaded", function () {
     usernameInput.addEventListener("input", checkFormValidity);
 
     // Form submission
-    loginForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-        const password = passwordInput.value;
-        const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    const username = usernameInput.value.trim();
+    // ดึงค่าว่าติ๊กจำรหัสผ่านไหม (true/false)
+    const rememberMe = document.getElementById("rememberMe").checked; 
 
-        // Final validation
-        if (username.length === 0) {
-            document.getElementById("usernameError").classList.add("show");
-            usernameInput.classList.add("error");
-            return;
+    // Final validation
+    if (username.length === 0) {
+        document.getElementById("usernameError").classList.add("show");
+        usernameInput.classList.add("error");
+        return;
+    }
+
+    if (!validatePassword(password)) {
+        return;
+    }
+
+    // เปลี่ยนข้อความปุ่มระหว่างรอ
+    loginBtn.textContent = "กำลังตรวจสอบ...";
+    loginBtn.disabled = true;
+
+    try {
+        // ยิง API ไปที่ Backend 
+        // (เดี๋ยวเราค่อยมาแก้ http://localhost:3000 เป็น URL ของ Render ทีหลัง)
+        const response = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password, rememberMe }),
+            credentials: "include" // ***สำคัญมาก: ต้องมีเพื่อรับ Cookie ระบบ Remember Me***
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // ล็อกอินสำเร็จ
+            successMessage.classList.add("show");
+            successMessage.textContent = "✓ เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ " + data.user;
+            loginBtn.textContent = "สำเร็จ!";
+            
+            // TODO: เมื่อสำเร็จให้เปลี่ยนหน้าไป Dashboard
+            // setTimeout(() => { window.location.href = "/dashboard.html"; }, 1000);
+        } else {
+            // กรณีรหัสผิด
+            alert(data.detail || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+            loginBtn.textContent = "เข้าสู่ระบบ";
+            loginBtn.disabled = false;
         }
-
-        if (!validatePassword(password)) {
-            return;
-        }
+    } catch (error) {
+        // กรณีเซิร์ฟเวอร์ล่มหรือเชื่อมต่อไม่ได้
+        console.error("Error:", error);
+        alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่");
+        loginBtn.textContent = "เข้าสู่ระบบ";
+        loginBtn.disabled = false;
+    }
+});
 
         // Success
         successMessage.classList.add("show");
