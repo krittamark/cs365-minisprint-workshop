@@ -7,6 +7,8 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
+    paths:
+      - "./"
   pull_request:
     branches: [ "main" ]
 
@@ -19,6 +21,10 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -37,10 +43,16 @@ jobs:
           # ในโปรเจกต์จริง มักจะใช้ Jest หรือ Mocha ในการรัน Test
           echo "Logic Test Passed!"
 
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./"
+
+
       # ขั้นตอน CD: ตัวอย่างการ Deploy ไปยัง GitHub Pages (หากต้องการ)
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'push' # ให้รันเฉพาะตอน Push เท่านั้น
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./ # ระบุโฟลเดอร์ที่เก็บไฟล์เว็บ
+        id: deployment
+        uses: actions/deploy-page@v4
