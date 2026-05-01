@@ -19,12 +19,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check for HTML Errors
-        run: test -f index.html || exit 1
+        run: test -f frontend/index.html || exit 1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "." # ระบุโฟลเดอร์ที่เก็บไฟล์ HTML/CSS/JS
+          path: "./frontend" # ระบุโฟลเดอร์ที่เก็บไฟล์ HTML/CSS/JS
 
   deploy:
     needs: build # ต้องรอให้ build เสร็จก่อน
