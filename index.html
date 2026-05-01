@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login Page</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .login-container {
+                background: #ffffff;
+                padding: 40px;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .login-header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .login-header h1 {
+                color: #1a1a2e;
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+
+            .login-header p {
+                color: #666;
+                font-size: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: #333;
+                font-weight: 500;
+                font-size: 14px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 14px 16px;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                font-size: 16px;
+                transition: all 0.3s ease;
+                outline: none;
+            }
+
+            .form-group input:focus {
+                border-color: #4f46e5;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+
+            .form-group input.error {
+                border-color: #ef4444;
+                background-color: #fef2f2;
+            }
+
+            .form-group input.success {
+                border-color: #22c55e;
+                background-color: #f0fdf4;
+            }
+
+            .password-wrapper {
+                position: relative;
+            }
+
+            .toggle-password {
+                position: absolute;
+                right: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #666;
+                font-size: 14px;
+                padding: 4px;
+            }
+
+            .toggle-password:hover {
+                color: #4f46e5;
+            }
+
+            .error-message {
+                color: #ef4444;
+                font-size: 12px;
+                margin-top: 6px;
+                display: none;
+            }
+
+            .error-message.show {
+                display: block;
+            }
+
+            .password-requirements {
+                background: #f8fafc;
+                padding: 16px;
+                border-radius: 10px;
+                margin-bottom: 24px;
+            }
+
+            .password-requirements h3 {
+                font-size: 13px;
+                color: #475569;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+
+            .requirement {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                color: #64748b;
+                margin-bottom: 6px;
+            }
+
+            .requirement:last-child {
+                margin-bottom: 0;
+            }
+
+            .requirement-icon {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                background: #e2e8f0;
+                color: #64748b;
+                transition: all 0.3s ease;
+            }
+
+            .requirement.valid .requirement-icon {
+                background: #22c55e;
+                color: white;
+            }
+
+            .requirement.valid {
+                color: #22c55e;
+            }
+
+            .requirement.invalid .requirement-icon {
+                background: #ef4444;
+                color: white;
+            }
+
+            .requirement.invalid {
+                color: #ef4444;
+            }
+
+            .char-counter {
+                text-align: right;
+                font-size: 12px;
+                color: #64748b;
+                margin-top: 6px;
+            }
+
+            .char-counter.warning {
+                color: #f59e0b;
+            }
+
+            .char-counter.error {
+                color: #ef4444;
+            }
+
+            .login-btn {
+                width: 100%;
+                padding: 14px;
+                background: #4f46e5;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .login-btn:hover {
+                background: #4338ca;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            }
+
+            .login-btn:disabled {
+                background: #a5b4fc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .success-message {
+                display: none;
+                text-align: center;
+                padding: 20px;
+                background: #f0fdf4;
+                border-radius: 10px;
+                margin-top: 20px;
+                color: #166534;
+                font-weight: 500;
+            }
+
+            .success-message.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-container">
+            <div class="login-header">
+                <h1>เข้าสู่ระบบ</h1>
+                <p>กรุณากรอกข้อมูลเพื่อเข้าสู่ระบบ</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">ชื่อผู้ใช้</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="กรอกชื่อผู้ใช้"
+                        required
+                    />
+                    <div class="error-message" id="usernameError">
+                        กรุณากรอกชื่อผู้ใช้
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน</label>
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="กรอกรหัสผ่าน"
+                            maxlength="100"
+                            required
+                        />
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword()"
+                        >
+                            แสดง
+                        </button>
+                    </div>
+                    <div class="char-counter" id="charCounter">
+                        0 / 100 ตัวอักษร
+                    </div>
+                </div>
+
+                <div class="password-requirements">
+                    <h3>รหัสผ่านต้องมี:</h3>
+                    <div class="requirement" id="req-length">
+                        <span class="requirement-icon">○</span>
+                        <span>ตัวอักษรอย่างน้อย 8 ตัว</span>
+                    </div>
+                    <div class="requirement" id="req-number">
+                        <span class="requirement-icon">○</span>
+                        <span>ตัวเลขอย่างน้อย 1 ตัว</span>
+                    </div>
+                    <div class="requirement" id="req-max">
+                        <span class="requirement-icon">○</span>
+                        <span>ไม่เกิน 100 ตัวอักษร</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn" disabled>
+                    เข้าสู่ระบบ
+                </button>
+
+                <div class="success-message" id="successMessage">
+                    ✓ เข้าสู่ระบบสำเร็จ!
+                </div>
+            </form>
+        </div>
+
+        <script>
+            const passwordInput = document.getElementById("password");
+            const usernameInput = document.getElementById("username");
+            const loginBtn = document.getElementById("loginBtn");
+            const loginForm = document.getElementById("loginForm");
+            const charCounter = document.getElementById("charCounter");
+            const successMessage = document.getElementById("successMessage");
+
+            const reqLength = document.getElementById("req-length");
+            const reqNumber = document.getElementById("req-number");
+            const reqMax = document.getElementById("req-max");
+
+            // Toggle password visibility
+            function togglePassword() {
+                const toggleBtn = document.querySelector(".toggle-password");
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleBtn.textContent = "ซ่อน";
+                } else {
+                    passwordInput.type = "password";
+                    toggleBtn.textContent = "แสดง";
+                }
+            }
+
+            // Validate password
+            function validatePassword(password) {
+                const hasMinLength = password.length >= 8;
+                const hasNumber = /\d/.test(password);
+                const hasMaxLength = password.length <= 100;
+
+                // Update requirement indicators
+                updateRequirement(reqLength, hasMinLength);
+                updateRequirement(reqNumber, hasNumber);
+                updateRequirement(reqMax, hasMaxLength);
+
+                // Update character counter
+                const length = password.length;
+                charCounter.textContent = `${length} / 100 ตัวอักษร`;
+
+                charCounter.classList.remove("warning", "error");
+                if (length > 100) {
+                    charCounter.classList.add("error");
+                } else if (length >= 90) {
+                    charCounter.classList.add("warning");
+                }
+
+                return hasMinLength && hasNumber && hasMaxLength;
+            }
+
+            // Update requirement visual state
+            function updateRequirement(element, isValid) {
+                const icon = element.querySelector(".requirement-icon");
+
+                element.classList.remove("valid", "invalid");
+
+                if (isValid) {
+                    element.classList.add("valid");
+                    icon.textContent = "✓";
+                } else if (passwordInput.value.length > 0) {
+                    element.classList.add("invalid");
+                    icon.textContent = "✕";
+                } else {
+                    icon.textContent = "○";
+                }
+            }
+
+            // Check form validity
+            function checkFormValidity() {
+                const isPasswordValid = validatePassword(passwordInput.value);
+                const isUsernameValid = usernameInput.value.trim().length > 0;
+
+                loginBtn.disabled = !(isPasswordValid && isUsernameValid);
+
+                // Update input styles
+                if (passwordInput.value.length > 0) {
+                    passwordInput.classList.remove("success", "error");
+                    passwordInput.classList.add(
+                        isPasswordValid ? "success" : "error",
+                    );
+                } else {
+                    passwordInput.classList.remove("success", "error");
+                }
+            }
+
+            // Event listeners
+            passwordInput.addEventListener("input", checkFormValidity);
+            usernameInput.addEventListener("input", checkFormValidity);
+
+            // Form submission
+            loginForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const password = passwordInput.value;
+                const username = usernameInput.value.trim();
+
+                // Final validation
+                if (username.length === 0) {
+                    document
+                        .getElementById("usernameError")
+                        .classList.add("show");
+                    usernameInput.classList.add("error");
+                    return;
+                }
+
+                if (!validatePassword(password)) {
+                    return;
+                }
+
+                // Success
+                successMessage.classList.add("show");
+                loginBtn.textContent = "สำเร็จ!";
+                loginBtn.disabled = true;
+
+                // Log for demonstration
+                console.log("Login successful!");
+                console.log("Username:", username);
+                console.log("Password length:", password.length);
+
+                // Reset after 2 seconds (for demo)
+                setTimeout(function () {
+                    successMessage.classList.remove("show");
+                    loginBtn.textContent = "เข้าสู่ระบบ";
+                    loginForm.reset();
+                    checkFormValidity();
+                    passwordInput.classList.remove("success", "error");
+
+                    // Reset requirements
+                    [reqLength, reqNumber, reqMax].forEach(function (req) {
+                        req.classList.remove("valid", "invalid");
+                        req.querySelector(".requirement-icon").textContent =
+                            "○";
+                    });
+
+                    charCounter.textContent = "0 / 100 ตัวอักษร";
+                    charCounter.classList.remove("warning", "error");
+                }, 2000);
+            });
+
+            // Remove error on username input
+            usernameInput.addEventListener("input", function () {
+                document
+                    .getElementById("usernameError")
+                    .classList.remove("show");
+                usernameInput.classList.remove("error");
+            });
+        </script>
+    </body>
+</html>
